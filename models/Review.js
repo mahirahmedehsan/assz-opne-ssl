@@ -1,0 +1,32 @@
+const mongoose = require('mongoose');
+
+const reviewSchema = new mongoose.Schema({
+  targetType: {
+    type: String,
+    enum: ['product', 'service'],
+    required: true,
+  },
+  targetId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    refPath: 'targetType',
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  rating: {
+    type: Number,
+    required: true,
+    min: 1,
+    max: 5,
+  },
+  comment: String,
+  isApproved: { type: Boolean, default: true },
+}, { timestamps: true });
+
+reviewSchema.index({ targetType: 1, targetId: 1 });
+reviewSchema.index({ user: 1 });
+
+module.exports = mongoose.model('Review', reviewSchema);
