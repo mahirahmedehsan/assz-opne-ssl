@@ -70,6 +70,15 @@ app.use('/api/users', userRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/hero-slides', heroSlideRoutes);
 
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(err.status || 500).json({
+    error: process.env.NODE_ENV === 'production'
+      ? 'Internal server error'
+      : err.message,
+  });
+});
+
 const PORT = process.env.PORT || 5000;
 
 module.exports = app;
