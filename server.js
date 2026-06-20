@@ -1,13 +1,10 @@
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
-const mongoose = require('mongoose');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/db');
-
-const Product = require('./models/Product');
 
 const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/products');
@@ -22,16 +19,6 @@ const heroSlideRoutes = require('./routes/heroSlides');
 
 
 const app = express();
-
-connectDB().then(() => {
-  if (mongoose.connection.readyState === 1) {
-    Product.syncIndexes().then(() => {
-      console.log('Product indexes synced');
-    }).catch(err => {
-      console.error('Index sync failed:', err.message);
-    });
-  }
-}).catch(() => {});
 
 app.use(helmet({ contentSecurityPolicy: false }));
 const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173').split(',').map(s => s.trim());
@@ -82,10 +69,27 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
-module.exports = app;
+module.exports = async (req, res) => {
+  try {
+    await connectDB();
+  } catch {
+    return res.status(503).json({ error: 'Database not available' });
+  }
+  app(req, res);
+};
 
 if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
+  const start = async () => {
+    try {
+      await connectDB();
+      const Product = require('./models/Product');
+      Product.syncIndexes().catch(err => console.error('Index sync failed:', err.message));
+    } catch (e) {
+      console.warn('Server starting without DB:', e.message);
+    }
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  };
+  start();
 }
