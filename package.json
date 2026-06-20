@@ -18,9 +18,9 @@
     "express": "^5.2.1",
     "express-rate-limit": "^8.5.2",
     "express-validator": "^7.3.2",
-    "firebase-admin": "^14.0.0",
+    "firebase-admin": "^13.10.0",
     "helmet": "^8.2.0",
-    "mongoose": "^9.7.1"
+    "mongoose": "^8.24.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

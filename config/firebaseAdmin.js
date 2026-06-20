@@ -13,7 +13,7 @@ if (projectId && clientEmail && privateKeyRaw) {
 
     if (!admin.apps || admin.apps.length === 0) {
       admin.initializeApp({
-        credential: admin.cert({
+        credential: admin.credential.cert({
           projectId,
           clientEmail,
           privateKey,
