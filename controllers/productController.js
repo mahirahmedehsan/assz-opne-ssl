@@ -58,7 +58,9 @@ const getBySlug = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const product = await Product.create(req.body);
+    const allowed = ['name', 'slug', 'category', 'brand', 'price', 'discountPrice', 'stock', 'description', 'images', 'specs', 'isSecondHand', 'condition', 'isActive', 'isFeatured'];
+    const data = Object.fromEntries(allowed.filter(k => k in req.body).map(k => [k, req.body[k]]));
+    const product = await Product.create(data);
     res.status(201).json({ product });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -67,7 +69,9 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    const allowed = ['name', 'slug', 'category', 'brand', 'price', 'discountPrice', 'stock', 'description', 'images', 'specs', 'isSecondHand', 'condition', 'isActive', 'isFeatured'];
+    const data = Object.fromEntries(allowed.filter(k => k in req.body).map(k => [k, req.body[k]]));
+    const product = await Product.findByIdAndUpdate(req.params.id, data, { new: true, runValidators: true });
     if (!product) return res.status(404).json({ error: 'Product not found' });
     res.json({ product });
   } catch (error) {

@@ -65,6 +65,10 @@ app.use('/api/about-info', aboutInfoRoutes);
 app.use('/api/repair-page-info', repairPageInfoRoutes);
 app.use('/api/social-media', socialMediaRoutes);
 
+app.use((req, res) => {
+  res.status(404).json({ error: `Route ${req.originalUrl} not found` });
+});
+
 app.use((err, req, res, next) => {
   console.error('Unhandled error:', err);
   res.status(err.status || 500).json({
@@ -78,7 +82,10 @@ const PORT = process.env.PORT || 5000;
 
 module.exports = async (req, res) => {
   try {
-    await connectDB();
+    const conn = await connectDB();
+    if (!conn) {
+      return res.status(503).json({ error: 'Database not available' });
+    }
   } catch {
     return res.status(503).json({ error: 'Database not available' });
   }

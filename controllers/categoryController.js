@@ -15,7 +15,9 @@ const list = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const category = await Category.create(req.body);
+    const allowed = ['name', 'slug', 'icon', 'type', 'parentCategory'];
+    const data = Object.fromEntries(allowed.filter(k => k in req.body).map(k => [k, req.body[k]]));
+    const category = await Category.create(data);
     res.status(201).json({ category });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -24,7 +26,9 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const category = await Category.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    const allowed = ['name', 'slug', 'icon', 'type', 'parentCategory'];
+    const data = Object.fromEntries(allowed.filter(k => k in req.body).map(k => [k, req.body[k]]));
+    const category = await Category.findByIdAndUpdate(req.params.id, data, { new: true, runValidators: true });
     if (!category) return res.status(404).json({ error: 'Category not found' });
     res.json({ category });
   } catch (error) {

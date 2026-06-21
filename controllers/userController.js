@@ -45,7 +45,9 @@ const adminList = async (req, res) => {
 
 const adminUpdateUser = async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    const allowed = ['name', 'email', 'phone', 'address', 'addresses', 'photoURL', 'role'];
+    const data = Object.fromEntries(allowed.filter(k => k in req.body).map(k => [k, req.body[k]]));
+    const user = await User.findByIdAndUpdate(req.params.id, data, { new: true, runValidators: true });
     if (!user) return res.status(404).json({ error: 'User not found' });
     res.json({ user });
   } catch (error) {
