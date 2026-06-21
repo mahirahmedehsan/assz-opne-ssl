@@ -16,7 +16,7 @@ const reviewRoutes = require('./routes/reviews');
 const userRoutes = require('./routes/users');
 const contactRoutes = require('./routes/contact');
 const heroSlideRoutes = require('./routes/heroSlides');
-
+const contactInfoRoutes = require('./routes/contactInfo');
 
 const app = express();
 
@@ -57,6 +57,7 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/hero-slides', heroSlideRoutes);
+app.use('/api/contact-info', contactInfoRoutes);
 
 app.use((err, req, res, next) => {
   console.error('Unhandled error:', err);
