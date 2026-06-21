@@ -1,19 +1,14 @@
-const { Router } = require('express');
-const {
-  listFeatured, listAll, adminList,
-  create, update, remove, reorder,
-} = require('../controllers/socialMediaController');
-const verifyFirebaseToken = require('../middleware/verifyFirebaseToken');
-const requireAdmin = require('../middleware/requireAdmin');
-
-const router = Router();
+const express = require('express');
+const router = express.Router();
+const { authenticate, isAdmin } = require('../middleware/auth');
+const { listFeatured, list, adminList, create, update, remove, reorder } = require('../controllers/socialMediaController');
 
 router.get('/featured', listFeatured);
-router.get('/', listAll);
-router.get('/admin', verifyFirebaseToken, requireAdmin, adminList);
-router.post('/', verifyFirebaseToken, requireAdmin, create);
-router.put('/reorder', verifyFirebaseToken, requireAdmin, reorder);
-router.put('/:id', verifyFirebaseToken, requireAdmin, update);
-router.delete('/:id', verifyFirebaseToken, requireAdmin, remove);
+router.get('/', list);
+router.get('/admin', authenticate, isAdmin, adminList);
+router.post('/', authenticate, isAdmin, create);
+router.put('/reorder', authenticate, isAdmin, reorder);
+router.put('/:id', authenticate, isAdmin, update);
+router.delete('/:id', authenticate, isAdmin, remove);
 
 module.exports = router;
