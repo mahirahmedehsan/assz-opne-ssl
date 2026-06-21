@@ -7,6 +7,7 @@ const Category = require('./models/Category');
 const Product = require('./models/Product');
 const RepairService = require('./models/RepairService');
 const ContactInfo = require('./models/ContactInfo');
+const AboutInfo = require('./models/AboutInfo');
 
 const seed = async () => {
   await connectDB();
@@ -34,6 +35,8 @@ const seed = async () => {
 
   const [contactInfo] = await ContactInfo.create([{}]);
   console.log('Contact info created');
+  const [aboutInfo] = await AboutInfo.create([{}]);
+  console.log('About info created');
 
   const phoneAcc = categories.find((c) => c.slug === 'phone-accessories')._id;
   const laptopAcc = categories.find((c) => c.slug === 'laptop-accessories')._id;
